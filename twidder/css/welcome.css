@@ -1,35 +1,62 @@
 
-
+body{
+background-color: blue;
+}
 .container {
   margin: 50px auto;
   width: 640px;
 }
-
+#main {
+  position: center-aligned;
+  margin: 0 auto;
+  padding: 100px 0px 0px;
+  width: 600px;
+  height: 400px;
+  }
 #login {
   float:right;
   position: relative;
-  margin: 0 auto;
-  padding: 20px 20px 20px;
-  width: 260px;
+  margin: 0px 0px 10px 0px;
+  padding: 10px 0px;
+  width: 250px;
+  background-color: white;
 }
 #signUp {
   float:right;
   position: relative;
   margin: 0 auto;
-  padding: 20px 20px 20px;
-  width: 260px;
+  padding: 5px 0px 7px 0px;
+  width: 250px;
+  background-color: white;
 }
-.form{
-      
-}
-
 #logo {
   float:left;
   position: relative;
   margin: 0 auto;
-  padding: 150px 150px 20px;
-  width: 310px;
+  padding: 0px 10px 0px 0px;
+  width: 340px;
 }
+form{
+display: inline-block;
+text-align: right;
+}
+p{
+text-align:center;
+font-weight:bold;
+}
+label{
+padding: 5px;
+font: arial;
+font-size: 12px;
+display:inline-block;
+clear:left;
+float:left;
+text-align: left;
+}
+select{
+width: 160px;
+}
+
 .login p.submit {
   text-align: right;
 }

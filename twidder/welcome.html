@@ -8,44 +8,55 @@
 	</head>
                      
 	<body>
+		<div id="main"> 
 		<div id="logo"> 
 			<img src="assets/wimage.png">
 		</div>
-        <div id="left">
             <div id="login"> 
                 <form> 
-				    email:
-				    <input type="text" name ="email"> 
-				    password:
-				    <input type="password" name ="password"> 
+				   <label>Email:</label>
+				    <input type="text" name ="email">
+				    <br>
+				    <label>Password:</label>
+				    <input type="password" name ="password">
+				    <br> 
 				    <button type="login" onclick="">login!</button> 
 			     </form>
             </div>
                                                
             <div id="signUp">
+				<p>Sign up here</p>
                 <form>
-				    First name:
+				   <label>First name:</label>
                     <input type="text" name="First name">
-				    Last name:
+                    <br>
+				    <label>Last name:</label>
 				    <input type="text" name="Last name">
-				    Gender:
+				    <br>
+				    <label> Gender:</label>
 				    <select list="Gender">
                         <option value="Male">Male</option>
 					   <option value="female">Female</option>
-				    </select><br>
-				    City:
+				    </select>
+				    <br>
+				    <label> City:</label>
 				    <input type="text" name="City">
-				    Country:
+				    <br>
+				    <label> Country:</label>
 				    <input type="text" name="Country">
-				    Email:
+				    <br>
+				     <label>Email:</label>
 				    <input type="text" name="Emial">
-                    Password:
+				    <br>
+                    <label> Password:</label>
 				    <input type="password" name ="Password">
-				    Repeat psw:
+				    <br>
+				    <label> Repeat psw:</label>
 				    <input type="password" name ="Repeat psw"> 
+				    <br>
                     <button type="SignUp" onclick="">SignUp!</button> 
 			     </form>
             </div>
-        </div>
+		</div>
 	</body>
 </html>

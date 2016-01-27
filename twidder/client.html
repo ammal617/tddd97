@@ -2,50 +2,63 @@
 <html>
 	<head>  
 		<link href="css/welcome.css" type="text/css" rel="stylesheet">
-		<script src="client.js"</script>
-		<script src="serverstub.js </script>
+		<script src="client.js"></script>
+		<script src="serverstub.js"></script>
 		<title>Twidder</title>
-	</head>
-	<body>
-		<div id="left"> 
-			<img src="assets/wimage.png">
-		</div>
-			
-		<div id="right">
-			<div id="login"> 
-			<form> 
-				email:
-				<input type="text" name ="email"> 
-				password:
-				<input type="password" name ="password"> 
-				<button type="login" onclick="">login!</button> 
-			</form>
+		<script type="text/view" id="welcomeView">
+			<div id="main"> 
+				<div id="logo"> 
+					<img src="assets/wimage.png">
+				</div>
+				<div id="login"> 
+					<form> 
+						<label>Email:</label>
+						<input type="text" name ="email">
+						<br>
+						<label>Password:</label>
+						<input type="password" name ="password">
+						<br> 
+						<button type="login" onclick="">login!</button> 
+					</form>
+				</div>
+                                               
+				<div id="signUp">
+					<p>Sign up here</p>
+					<form>
+						<label>First name:</label>
+						<input type="text" name="First name">
+						<br>
+						<label>Last name:</label>
+						<input type="text" name="Last name">
+						<br>
+						<label> Gender:</label>
+						<select list="Gender">
+							<option value="Male">Male</option>
+							<option value="female">Female</option>
+						</select>
+						<br>
+						<label> City:</label>
+						<input type="text" name="City">
+						<br>
+						<label> Country:</label>
+						<input type="text" name="Country">
+						<br>
+						<label>Email:</label>
+						<input type="text" name="Emial">
+						<br>
+						<label> Password:</label>
+						<input type="password" name ="Password">
+						<br>
+						<label> Repeat psw:</label>
+						<input type="password" name ="Repeat psw"> 
+						<br>
+						<button type="SignUp" onclick="">SignUp!</button> 
+					</form>
+				</div>
 			</div>
-			<div id="SignUp">
-			<form>
-				
-				First name:
-				<input type="text" name="First name">
-				Last name:
-				<input type="text" name="Last name">
-				Gender:
-				<select list="Gender">
-					<option value="Male">Male</option>
-					<option value="female">Female</option>
-				</select><br>
-				City:
-				<input type="text" name="City">
-				Country:
-				<input type="text" name="Country">
-				Email:
-				<input type="text" name="Emial">
-				Password:
-				<input type="password" name ="Password">
-				Repeat psw:
-				<input type="password" name ="Repeat psw"> 
-				 <button type="SignUp" onclick="">SignUp!</button> 
-			
-			</form>
-		</div> </div> 
+		</script>	
+	</head>
+	<body id="content">
+		
 	<body/>
 </html>
