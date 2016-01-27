@@ -5,19 +5,29 @@
   width: 640px;
 }
 
-#right {
-  float:center.right;
+#login {
+  float:right;
   position: relative;
   margin: 0 auto;
   padding: 20px 20px 20px;
-  width: 310px;
+  width: 260px;
+}
+#signUp {
+  float:right;
+  position: relative;
+  margin: 0 auto;
+  padding: 20px 20px 20px;
+  width: 260px;
+}
+.form{
+      
 }
 
-#left {
+#logo {
   float:left;
   position: relative;
   margin: 0 auto;
-  padding: 20px 20px 20px;
+  padding: 150px 150px 20px;
   width: 310px;
 }
 .login p.submit {
