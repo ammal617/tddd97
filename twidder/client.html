@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>  
-		<link href="css/welcome.css" type="text/css" rel="stylesheet">
-		<script src="client.js"></script>
-		<script src="serverstub.js"></script>
+		<link href="css/client.css" type="text/css" rel="stylesheet">
+		<script src="js/client.js"></script>
+		<script src="js/serverstub.js"></script>
 		<title>Twidder</title>
 		<script type="text/view" id="welcomeView">
 			<div id="main"> 
@@ -24,12 +24,12 @@
                                                
 				<div id="signUp">
 					<p>Sign up here</p>
-					<form>
+					<form name="signUpForm">
 						<label>First name:</label>
-						<input type="text" name="First name">
+						<input type="text" name="Firstname">
 						<br>
 						<label>Last name:</label>
-						<input type="text" name="Last name">
+						<input type="text" name="Lastname">
 						<br>
 						<label> Gender:</label>
 						<select list="Gender">
@@ -44,21 +44,26 @@
 						<input type="text" name="Country">
 						<br>
 						<label>Email:</label>
-						<input type="text" name="Emial">
+						<input type="email" name="Email">
 						<br>
 						<label> Password:</label>
 						<input type="password" name ="Password">
 						<br>
 						<label> Repeat psw:</label>
-						<input type="password" name ="Repeat psw"> 
+						<input type="password" name ="Repeatpsw"> 
 						<br>
-						<button type="SignUp" onclick="">SignUp!</button> 
+						<button type="SignUp" onclick="trySignIn()">SignUp!</button> 
 					</form>
 				</div>
 			</div>
-		</script>	
+		</script>
+        <script type="text/view" id="welcomeView">
+            window.alert("Snopp"); 
+        </script>
 	</head>
-	<body id="content">
-		
+	<body>
+        <div id="currentView">
+            
+        </div>
 	<body/>
 </html>

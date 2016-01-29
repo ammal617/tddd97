@@ -1,6 +1,6 @@
 
 body{
-background-color: blue;
+background-color: darkgrey;
 }
 .container {
   margin: 50px auto;
@@ -17,7 +17,7 @@ background-color: blue;
   float:right;
   position: relative;
   margin: 0px 0px 10px 0px;
-  padding: 10px 0px;
+  padding: 15px 0px;
   width: 250px;
   background-color: white;
 }
@@ -25,7 +25,7 @@ background-color: blue;
   float:right;
   position: relative;
   margin: 0 auto;
-  padding: 5px 0px 7px 0px;
+  padding: 8px 0px 9px 0px;
   width: 250px;
   background-color: white;
 }
@@ -38,7 +38,15 @@ background-color: blue;
 }
 form{
 display: inline-block;
-text-align: right;
+}
+input{
+    float: right;
+    width: 170px;
+}
+select{
+    float: right;
+    width: 173px;
+    
 }
 p{
 text-align:center;
@@ -49,13 +57,12 @@ padding: 5px;
 font: arial;
 font-size: 12px;
 display:inline-block;
-clear:left;
-float:left;
 text-align: left;
 }
-select{
-width: 160px;
+button{
+    float: right;
 }
+
 
 .login p.submit {
   text-align: right;

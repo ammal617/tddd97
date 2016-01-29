@@ -1,16 +1,68 @@
 
-
+body{
+background-color: darkgrey;
+}
 .container {
   margin: 50px auto;
   width: 640px;
 }
-
-.login {
+#main {
+  position: center-aligned;
+  margin: 0 auto;
+  padding: 100px 0px 0px;
+  width: 600px;
+  height: 400px;
+  }
+#login {
+  float:right;
+  position: relative;
+  margin: 0px 0px 10px 0px;
+  padding: 15px 0px;
+  width: 250px;
+  background-color: white;
+}
+#signUp {
+  float:right;
   position: relative;
   margin: 0 auto;
-  padding: 20px 20px 20px;
-  width: 310px;
+  padding: 8px 0px 9px 0px;
+  width: 250px;
+  background-color: white;
 }
+#logo {
+  float:left;
+  position: relative;
+  margin: 0 auto;
+  padding: 0px 10px 0px 0px;
+  width: 340px;
+}
+form{
+display: inline-block;
+}
+input{
+    float: right;
+    width: 170px;
+}
+select{
+    float: right;
+    width: 173px;
+    
+}
+p{
+text-align:center;
+font-weight:bold;
+}
+label{
+padding: 5px;
+font: arial;
+font-size: 12px;
+display:inline-block;
+text-align: left;
+}
+button{
+    float: right;
+}
+
 
 .login p.submit {
   text-align: right;
