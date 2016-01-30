@@ -1,96 +1,151 @@
 
 body{
-background-color: darkgrey;
+    background-color: darkcyan;
 }
 .container {
-  margin: 50px auto;
-  width: 640px;
+    margin: 50px auto;
+    width: 640px;
 }
 #main {
-  position: center-aligned;
-  margin: 0 auto;
-  padding: 100px 0px 0px;
-  width: 600px;
-  height: 400px;
-  }
+    position: center-aligned;
+    margin: 0 auto;
+    padding: 100px 0px 0px;
+    width: 600px;
+    height: 400px;
+}
 #login {
-  float:right;
-  position: relative;
-  margin: 0px 0px 10px 0px;
-  padding: 15px 0px;
-  width: 250px;
-  background-color: white;
+    float: right;
+    position: relative;
+    margin: 0px 0px 10px 0px;
+    padding: 15px 0px;
+    width: 250px;
+    background-color: white;
 }
 #signUp {
-  float:right;
-  position: relative;
-  margin: 0 auto;
-  padding: 8px 0px 9px 0px;
-  width: 250px;
-  background-color: white;
+    float: right;
+    position: relative;
+    margin: 0 auto;
+    padding: 8px 0px 9px 0px;
+    width: 250px;
+    background-color: white;
 }
 #logo {
-  float:left;
-  position: relative;
-  margin: 0 auto;
-  padding: 0px 10px 0px 0px;
-  width: 340px;
+    float:left;
+    position: relative;
+    margin: 0 auto;
+    padding: 0px 10px 0px 0px;
+    width: 340px;
 }
-form{
-display: inline-block;
+#main form{
+    display: inline-block;
+    width: 222px;
 }
-input{
+#main input{
     float: right;
-    width: 170px;
+    width: 145px;
 }
-select{
+#main select{
+    width: 149px;
     float: right;
-    width: 173px;
-    
 }
-p{
-text-align:center;
-font-weight:bold;
+#main p{
+    text-align:center;
+    font-weight:bold;
 }
-label{
-padding: 5px;
-font: arial;
-font-size: 12px;
-display:inline-block;
-text-align: left;
+#main label{
+    padding: 5px;
+    font-size: 12px;
+    display:inline-block;
+    text-align: left;
 }
-button{
+#main button{
     float: right;
+    margin-right: 28px;
+}
+#errorMessage, #errorLoginMessage{
+    font-size: 12px;
+    margin-top: 3px;
+    text-align: center;
+    color: crimson;
 }
 
+.tabs{
+    height: 500px;
+    margin: 150px 200px;
+}
+.tabs > input{
+    display: none;
+}
+.tabs > section{
+}
+.tabs > section > h1{
+    margin: 0 auto;
+}
+.tabs > section > h1 > label{
+    float: left;
+    padding: 6px;
+    margin: 1px;
+    background-color: #809ca1;
+    font-size: 24px;
+    font-family: Verdana;
+    font-style: italic;
+    border: 1px solid black;
+    width: 30%;
+    text-align: center;
+}
+.tabs > section > div{
+    position: absolute;
+    margin-top: 45px;
+}
+.tabs > section > div > label{
+    float: left;
+    font-family: Verdana;
+    font-style: italic;
+    font-size: 15px;
+}
+.tabs > section > div > input{
+    float: right;
+    margin: 2px;
+}
+.tabs > section > div > button{
+    float: left;
+    margin: 2px;
+}
+
+.tabs > input:checked + section > h1{
+    display: block;
+}
+.tabs > input:not(:checked) + section > div {
+    display: none;
+}
 
 .login p.submit {
-  text-align: right;
+    text-align: right;
 }
- 
+
 .login-help {
-  margin: 20px 0;
-  font-size: 11px;
-  color: white;
-  text-align: center;
-  text-shadow: 0 1px #2a85a1;
+    margin: 20px 0;
+    font-size: 11px;
+    color: white;
+    text-align: center;
+    text-shadow: 0 1px #2a85a1;
 }
- 
+
 .login-help a {
-  color: #cce7fa;
-  text-decoration: none;
+    color: #cce7fa;
+    text-decoration: none;
 }
- 
+
 .login-help a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
- 
+
 :-moz-placeholder {
-  color: #c9c9c9 !important;
-  font-size: 13px;
+    color: #c9c9c9 !important;
+    font-size: 13px;
 }
- 
+
 ::-webkit-input-placeholder {
-  color: #ccc;
-  font-size: 13px;
+    color: #ccc;
+    font-size: 13px;
 }
