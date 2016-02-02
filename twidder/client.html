@@ -80,7 +80,13 @@
                     <label>County: </label><label id="homeCountry"></label><br>
                 </div>
                 <div>
-
+                    <textarea id="postMessage" rows="3" cols="50"></textarea><br>
+                    <button type="button" onclick="tryPostMessage()">Post</button>
+                    <div id=showAllMessages>
+                        <label>My messages</label>
+                        <button type="button" onclick="getAllMessages()">Update</button><br>
+                        <div id="messageList"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -90,7 +96,11 @@
                 <label for="browseTabInp">Browse</label>
             </h1>
             <div>
-                BROWSE
+                <div>
+                    <label>Find friends</label>
+                    <input type="email" name="userEmail">
+                    <button onclick="checkoutThisUser()">Search</button>
+                </div>
             </div>
         </section>
         <input name="Tab" id="accountTabInp" type="radio">

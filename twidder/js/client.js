@@ -1,5 +1,5 @@
 displayViews = function(){
-    
+
 };
 var errorMessage;
 var Repeatpsw;
@@ -38,6 +38,46 @@ function checkBlanks(){
     }
 }
 
+function tryPostMessage(){
+    var userMessage = document.getElementById('postMessage').value;
+    var tempUserEmail = serverstub.getUserDataByToken(localStorage.getItem("userToken")).data.email;
+    if(userMessage == ""){
+        console.log("FUCK YOU");
+    }
+    else {
+        serverstub.postMessage(localStorage.getItem("userToken"), userMessage, tempUserEmail);
+        document.getElementById('postMessage').value = "";
+        getAllMessages();
+
+    }
+    console.log(tempUserEmail);
+}
+
+function getAllMessages(){
+    var messageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
+    document.getElementById('messageList').innerHTML = "";
+    var messageArraySize = 0;
+    while(messageArraySize<messageObject.length){
+        document.getElementById('messageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
+        messageObject[messageArraySize].content)+'</p>';
+        messageArraySize++;
+    }
+}
+
+function checkoutThisUser(){
+    var newUserView = '<textarea id="postMessage" rows="3" cols="50"></textarea><br><button type="button" onclick="tryPostMessage()">Post</button>' +
+        '<div id=showAllMessages><label>My messages</label><button type="button" onclick="getAllMessagesFromSearch()">Update</button><br>' +
+        '<div id="messageList"></div></div>';
+    var messageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
+    document.getElementById('messageList').innerHTML = "";
+    var messageArraySize = 0;
+    while(messageArraySize<messageObject.length){
+        document.getElementById('messageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
+        messageObject[messageArraySize].content)+'</p>';
+        messageArraySize++;
+    }
+}
+
 function checkEmail(){
     var Email = document.forms["signUpForm"]["Email"].value;
     var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -46,13 +86,13 @@ function checkEmail(){
         return false;
     }
     else{
-        return true;   
+        return true;
     }
 }
 
 function checkPassword(){
     var Repeatpsw = document.forms["signUpForm"]["Repeatpsw"].value;
-    
+
     if(userObject.password.length < 8){
         errorMessage = "Password is to short";
         return false;
