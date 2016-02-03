@@ -19,6 +19,14 @@ window.onload = function(){
 };
 function loadUserInfo(){
     var homeUserInfo = serverstub.getUserDataByToken(localStorage.getItem("userToken"));
+    var userMessageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
+    var userMessageArraySize = 0;
+    while(userMessageArraySize<userMessageObject.length){
+        document.getElementById('messageList').innerHTML += ('<label>'+userMessageObject[userMessageArraySize].writer+'</label><br><p>'+
+        userMessageObject[userMessageArraySize].content)+'</p>';
+        userMessageArraySize++;
+    }
+
     console.log(homeUserInfo.data);
     homeFirstName.innerHTML = homeUserInfo.data.firstname;
     homeLastName.innerHTML = homeUserInfo.data.familyname;
@@ -50,7 +58,6 @@ function tryPostMessage(){
         getAllMessages();
 
     }
-    console.log(tempUserEmail);
 }
 
 function getAllMessages(){
@@ -65,17 +72,38 @@ function getAllMessages(){
 }
 
 function checkoutThisUser(){
-    var newUserView = '<textarea id="postMessage" rows="3" cols="50"></textarea><br><button type="button" onclick="tryPostMessage()">Post</button>' +
-        '<div id=showAllMessages><label>My messages</label><button type="button" onclick="getAllMessagesFromSearch()">Update</button><br>' +
-        '<div id="messageList"></div></div>';
-    var messageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
-    document.getElementById('messageList').innerHTML = "";
-    var messageArraySize = 0;
-    while(messageArraySize<messageObject.length){
-        document.getElementById('messageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
-        messageObject[messageArraySize].content)+'</p>';
-        messageArraySize++;
+    var inputSearchUser = document.getElementById("userSearchEmail").value;
+    var newUserView = '<textarea id="searchUserPostMessage" rows="3" cols="50"></textarea><br><button type="button" onclick="postToUser()">Post</button>' +
+        '<div id=showAllMessages><label>'+inputSearchUser+'s messages </label><button type="button" onclick="checkoutThisUser()">Update</button><br>' +
+        '<div id="searchUserMessageList"></div></div>';
+    searchUserMessages = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser);
+    if(!searchUserMessages.success){
+        friendView.innerHTML = "<label>"+searchUserMessages.message+"</label>";
     }
+    else{
+        friendView.innerHTML = newUserView;
+        var messageObject = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser).data;
+        var messageArraySize = 0;
+        while(messageArraySize<messageObject.length){
+            document.getElementById('searchUserMessageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
+            messageObject[messageArraySize].content)+'</p>';
+            messageArraySize++;
+        }
+    }
+}
+function postToUser(){
+    var searchUserPostMessage = document.getElementById('searchUserPostMessage').value;
+    var inputSearchUser = document.getElementById("userSearchEmail").value;
+    if(searchUserPostMessage == ""){
+        console.log("FUCK YOU");
+    }
+    else {
+        serverstub.postMessage(localStorage.getItem("userToken"), searchUserPostMessage, inputSearchUser);
+        document.getElementById('postMessage').value = "";
+        getAllMessages();
+        checkoutThisUser();
+    }
+
 }
 
 function checkEmail(){
