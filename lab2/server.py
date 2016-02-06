@@ -1,9 +1,12 @@
-from flask import Flask
+from flask import Flask, request, redirect
+import sqlite3
+import database_helper
+
 app = Flask(__name__)
 
 @app.route("/", method=['GET'])
 def hello():
-    return "Hello World!"
+    return redirect('static/client.html')
 
 @app.route("/sign_in", method=['POST'])
 def sign_in():
@@ -19,7 +22,7 @@ def hola():
 def change_password():
     old_password = request.form['password']
     new_password = request.form['new_password']
-        return
+    return ""
 
 @app.route("/sign_up", method=['POST'])
 def hola():
