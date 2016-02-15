@@ -27,8 +27,11 @@ def query_db(query, args=(), one=False):
 
 
 def check_email(email, password):
-    # check if password and user
-    return True
+    valid_user = query_db('SELECT password, email FROM users WHERE email=? AND password=?', [email, password])
+    if valid_user:
+        return True
+    else:
+        return False
 
 
 def userExist(email):

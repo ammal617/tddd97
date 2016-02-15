@@ -1,5 +1,4 @@
 from flask import Flask, request, redirect, jsonify
-import sqlite3
 import database_helper
 import uuid
 
