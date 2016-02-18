@@ -26,7 +26,6 @@ function loadUserInfo(){
         userMessageObject[userMessageArraySize].content)+'</p>';
         userMessageArraySize++;
     }
-
     console.log(homeUserInfo.data);
     homeFirstName.innerHTML = homeUserInfo.data.firstname;
     homeLastName.innerHTML = homeUserInfo.data.familyname;

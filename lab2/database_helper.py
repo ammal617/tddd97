@@ -36,30 +36,56 @@ def check_email(email, password):
 
 def userExist(email):
     # check if user exists (false if not, true if exists)
-    return True
+    valid_user = query_db('SELECT * FROM users WHERE email=?', [email])
+    if valid_user:
+        return True
+    else:
+        return False
+
+
+def checkPassword(email, password):
+    valid_pass = query_db('SELECT * FROM users WHERE email=? AND password=?', [email, password])
+    if valid_pass:
+        return True
+    else:
+        return False
 
 
 def sign_up_user(email, password, first_name, family_name, gender, city, country):
-    # sign up the user
+    query_db('insert into users(email, password, firstname, familyname, gender, city, country) VALUES (?,?,?,?,?,?,?)',
+             [email, password, first_name, family_name, gender, city, country])
+    get_db().commit()
     return True
 
 
-def try_change_password(email, old_password, new_password):
-    # TRY change password from old one to new one return true/false
-    return True
+def change_password(email, new_password):
+    response = query_db('UPDATE users SET password=? WHERE email=?', [new_password, email])
+    get_db().commit()
+    return response
 
 
 def get_user_data(email):
     # return all data
-    return True
+    user_data = query_db('SELECT email, firstname, familyname, gender, city, country FROM users WHERE email=?', [email])
+    json_data = {"email": user_data[0][0], "firstname": user_data[0][1], "familyname": user_data[0][2],
+                     "gender": user_data[0][3], "city": user_data[0][4], "country": user_data[0][5]}
+    return json_data
 
 
 def get_user_messages(email):
     # return all messages
-    return True
+    message_data = query_db('SELECT id, message, sender, reciver FROM messages WHERE reciver=? ORDER by id DESC', [email])
+    tempsize = 0
+    while tempsize < len(message_data):
+        message_data[tempsize] = {"content": message_data[tempsize][1], "writer": message_data[tempsize][2],
+                                          "reciver": message_data[tempsize][3]}
+        tempsize = tempsize + 1
+    return message_data
 
 
-def post_message(email, message):
+def post_message(sender, reciver, message):
+    query_db('INSERT INTO messages(message, sender, reciver) VALUES (?,?,?)', [message, sender, reciver])
+    get_db().commit()
     return True
 
 
