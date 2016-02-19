@@ -114,9 +114,14 @@ body{
 
 .tabs > input:checked + section > h1{
     display: block;
+    color: grey;
 }
 .tabs > input:not(:checked) + section > div {
     display: none;
+}
+.tabs > input:not(:checked) + section label:hover{
+    cursor: pointer;
+    background-color: #BFDDE0;
 }
 
 .login p.submit {

@@ -5,8 +5,10 @@ var errorMessage;
 var Repeatpsw;
 var userObject = {email:"", password:"", firstname:"", familyname:"", gender:"", city:"", country:""};
 
-window.onload = function(){
-    var htmlDiv = document.getElementById('currentView');
+
+var displayView = function(){
+
+     var htmlDiv = document.getElementById('currentView');
     var htmlWelcome = document.getElementById('welcomeView');
     var htmlLogin = document.getElementById('loginView');
     if(localStorage.getItem("userToken") == "nothing"){
@@ -16,6 +18,12 @@ window.onload = function(){
         htmlDiv.innerHTML = htmlLogin.innerHTML;
         loadUserInfo();
     }
+}
+
+
+window.onload = function(){
+    displayView();
+
 };
 function loadUserInfo(){
     var homeUserInfo = serverstub.getUserDataByToken(localStorage.getItem("userToken"));
@@ -94,7 +102,6 @@ function postToUser(){
     var searchUserPostMessage = document.getElementById('searchUserPostMessage').value;
     var inputSearchUser = document.getElementById("userSearchEmail").value;
     if(searchUserPostMessage == ""){
-        console.log("FUCK YOU");
     }
     else {
         serverstub.postMessage(localStorage.getItem("userToken"), searchUserPostMessage, inputSearchUser);
@@ -121,7 +128,7 @@ function checkPassword(){
     var Repeatpsw = document.forms["signUpForm"]["Repeatpsw"].value;
 
     if(userObject.password.length < 8){
-        errorMessage = "Password is to short";
+        errorMessage = "Password needs to be more than 8 char";
         return false;
     }
     else if(userObject.password != Repeatpsw){
@@ -145,10 +152,13 @@ function createUser(){
     Repeatpsw = document.forms["signUpForm"]["Repeatpsw"].value;
     if(checkPassword() && checkEmail() && checkBlanks()){
         var errorDiv = document.getElementById('errorMessage');
-        errorDiv.innerHTML = "Success!";
-        document.getElementById("errorMessage").style.color = "green";
-        serverstub.signUp(userObject);
-        document.forms["signUpForm"].reset();
+        serverrespons= serverstub.signUp(userObject);
+        //add if statement to check error message from server response
+        errorDiv.innerHTML = serverrespons.message;
+        if(serverrespons.succes) {
+            document.getElementById("errorMessage").style.color = "green";
+            document.forms["signUpForm"].reset();
+        }
     }
     else{
         var errorDiv = document.getElementById('errorMessage');
@@ -163,7 +173,8 @@ function tryloginUser(){
 
     if(serverResp.success){
         localStorage.setItem("userToken", serverResp.data);
-        location.reload();
+        displayView();
+
     }
     else{
         document.forms["loginForm"].reset();
@@ -172,6 +183,7 @@ function tryloginUser(){
     }
 }
 function changeMyPassword(){
+    //add response message to success or not
     var oldPass = document.forms["changePass"]["oldpass"].value;
     var newPass = document.forms["changePass"]["newpass"].value;
     var repnewPass = document.forms["changePass"]["repnewpass"].value;
@@ -179,15 +191,18 @@ function changeMyPassword(){
         var passrespons = serverstub.changePassword(localStorage.getItem("userToken"), oldPass, newPass);
         if(passrespons.success){
             console.log(passrespons.message);
+            accountErrorMessage.innerHTML=passrespons.message;
             document.forms["changePass"].reset();
         }
         else{
             console.log(passrespons.message);
+            accountErrorMessage.innerHTML=passrespons.message;
             document.forms["changePass"].reset();
         }
     }
     else{
         console.log("Passwords don't match");
+        accountErrorMessage.innerHTML="Password needs to match.";
         document.forms["changePass"].reset();
     }
 }
