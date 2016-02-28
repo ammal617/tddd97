@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="css/client.css" type="text/css" rel="stylesheet">
+    <script src="js/client.js"></script>
+    <script src="js/serverstub.js"></script>
+    <title>Twidder</title>
+    <meta charset="utf-8">
+    <script type="text/view" id="welcomeView">
+			<div id="main"> 
+				<div id="logo"> 
+					<img src="assets/wimage.png">
+				</div>
+				<div id="login"> 
+					<form name="loginForm">
+						<label>Email:</label>
+						<input type="text" name ="email">
+						<br>
+						<label>Password:</label>
+						<input type="password" name ="password">
+						<br>
+					</form>
+					<button type="login" onclick="tryloginUser()">Login!</button>
+					<div id=errorLoginMessage></div>
+				</div>
+                                               
+				<div id="signUp">
+					<p>Sign up here</p>
+					<form name="signUpForm">
+						<label>First name:</label>
+						<input type="text" name="Firstname">
+						<br>
+						<label>Last name:</label>
+						<input type="text" name="Lastname">
+						<br>
+						<label>Gender:</label>
+						<select id="gendervalueID" list="Gender">
+							<option value="Male">Male</option>
+							<option value="female">Female</option>
+						</select>
+						<br>
+						<label>City:</label>
+						<input type="text" name="City">
+						<br>
+						<label>Country:</label>
+						<input type="text" name="Country">
+						<br>
+						<label>Email:</label>
+						<input type="email" name="Email">
+						<br>
+						<label>Password:</label>
+						<input type="password" name ="Password">
+						<br>
+						<label>Repeat psw:</label>
+						<input type="password" name ="Repeatpsw"> 
+						<br>
+					</form>
+					<button type="SignUp" onclick="createUser()">Sign up!</button>
+					<div id=errorMessage></div>
+				</div>
+			</div>
+		</script>
+    <script type="text/view" id="loginView">
+            <div>
+                <button type="submit" onclick="logoutUser()">Logout</button>
+            </div>
+            <div class="tabs">
+        <input name="Tab" id="homeTabInp" type="radio" checked>
+        <section>
+            <h1>
+                <label for="homeTabInp">Home</label>
+            </h1>
+            <div>
+                <div id=homeInfoDiv>
+                    <label>First name: </label><label id="homeFirstName"></label><br>
+                    <label>Last name: </label><label id="homeLastName"></label><br>
+                    <label>Email: </label><label id="homeEmail"></label><br>
+                    <label>Gender: </label><label id="homeGender"></label><br>
+                    <label>City: </label><label id="homeCity"></label><br>
+                    <label>County: </label><label id="homeCountry"></label><br>
+                </div>
+                <div>
+                    <textarea id="postMessage" rows="3" cols="50"></textarea><br>
+                    <button type="button" onclick="tryPostMessage()">Post</button>
+                    <div id=showAllMessages>
+                        <label>My messages</label>
+                        <button type="button" onclick="getAllMessages()">Update</button><br>
+                        <div id="messageList"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <input name="Tab" id="browseTabInp" type="radio">
+        <section>
+            <h1>
+                <label for="browseTabInp">Browse</label>
+            </h1>
+            <div>
+                <div>
+                    <label>Find friends</label>
+                    <input id="userSearchEmail" type="email" name="userEmail">
+                    <button onclick="checkoutThisUser()">Search</button>
+                    <div id=friendView>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <input name="Tab" id="accountTabInp" type="radio">
+        <section>
+            <h1>
+                <label for="accountTabInp">Account</label>
+            </h1>
+            <div>
+                <form name="changePass">
+                    <label>Old password</label><br>
+                    <input type="password" name="oldpass"><br>
+                    <label>New password</label><br>
+                    <input type="password" name="newpass"><br>
+                    <label>Repeat new password</label><br>
+                    <input type="password" name="repnewpass"><br>
+                    <button type="button" onclick="changeMyPassword()">Change</button>
+                </form>
+            </div>
+        </section>
+    </div>
+    </script>
+</head>
+<body>
+<div id="currentView">
+
+</div>
+<body/>
+</html>
