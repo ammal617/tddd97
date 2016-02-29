@@ -5,7 +5,9 @@ var errorMessage;
 var Repeatpsw;
 var userObject = {email:"", password:"", firstname:"", familyname:"", gender:"", city:"", country:""};
 
-window.onload = function(){
+
+var displayView = function(){
+
     var htmlDiv = document.getElementById('currentView');
     var htmlWelcome = document.getElementById('welcomeView');
     var htmlLogin = document.getElementById('loginView');
@@ -16,6 +18,10 @@ window.onload = function(){
         htmlDiv.innerHTML = htmlLogin.innerHTML;
         loadUserInfo();
     }
+}
+
+window.onload = function(){
+    displayView();
 };
 
 function send_post(adress, data){
@@ -42,18 +48,17 @@ function send_get(adress){
 }
 
 function loadUserInfo(){
-   // var homeUserInfo = serverstub.getUserDataByToken(localStorage.getItem("userToken"));
-   // var userMessageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
+    //var homeUserInfo = serverstub.getUserDataByToken(localStorage.getItem("userToken"));
+    //var userMessageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
 
     var homeUserInfo = send_get("/get_user_data_by_token/" + localStorage.getItem("userToken"));
     var userMessageObject = send_get("/get_user_message_by_token/" + localStorage.getItem("userToken")).data
     var userMessageArraySize = 0;
     while(userMessageArraySize<userMessageObject.length){
         document.getElementById('messageList').innerHTML += ('<label>'+userMessageObject[userMessageArraySize].writer+'</label><br><p>'+
-            userMessageObject[userMessageArraySize].content)+'</p>';
+        userMessageObject[userMessageArraySize].content)+'</p>';
         userMessageArraySize++;
     }
-
     console.log(homeUserInfo.data);
     homeFirstName.innerHTML = homeUserInfo.data.firstname;
     homeLastName.innerHTML = homeUserInfo.data.familyname;
@@ -77,12 +82,12 @@ function tryPostMessage(){
     var userMessage = document.getElementById('postMessage').value;
     var tempUserEmail = serverstub.getUserDataByToken(localStorage.getItem("userToken")).data.email;
     if(userMessage == ""){
+        console.log("YOU");
     }
     else {
         serverstub.postMessage(localStorage.getItem("userToken"), userMessage, tempUserEmail);
         document.getElementById('postMessage').value = "";
         getAllMessages();
-
     }
 }
 
@@ -92,7 +97,7 @@ function getAllMessages(){
     var messageArraySize = 0;
     while(messageArraySize<messageObject.length){
         document.getElementById('messageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
-            messageObject[messageArraySize].content)+'</p>';
+        messageObject[messageArraySize].content)+'</p>';
         messageArraySize++;
     }
 }
@@ -112,7 +117,7 @@ function checkoutThisUser(){
         var messageArraySize = 0;
         while(messageArraySize<messageObject.length){
             document.getElementById('searchUserMessageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
-                messageObject[messageArraySize].content)+'</p>';
+            messageObject[messageArraySize].content)+'</p>';
             messageArraySize++;
         }
     }
@@ -121,7 +126,6 @@ function postToUser(){
     var searchUserPostMessage = document.getElementById('searchUserPostMessage').value;
     var inputSearchUser = document.getElementById("userSearchEmail").value;
     if(searchUserPostMessage == ""){
-        console.log("YOU");
     }
     else {
         serverstub.postMessage(localStorage.getItem("userToken"), searchUserPostMessage, inputSearchUser);
@@ -148,7 +152,7 @@ function checkPassword(){
     var Repeatpsw = document.forms["signUpForm"]["Repeatpsw"].value;
 
     if(userObject.password.length < 8){
-        errorMessage = "Password is to short";
+        errorMessage = "Password needs to be more than 8 char";
         return false;
     }
     else if(userObject.password != Repeatpsw){
@@ -172,10 +176,13 @@ function createUser(){
     Repeatpsw = document.forms["signUpForm"]["Repeatpsw"].value;
     if(checkPassword() && checkEmail() && checkBlanks()){
         var errorDiv = document.getElementById('errorMessage');
-        errorDiv.innerHTML = "Success!";
-        document.getElementById("errorMessage").style.color = "green";
-        serverstub.signUp(userObject);
-        document.forms["signUpForm"].reset();
+        serverrespons= serverstub.signUp(userObject);
+        //add if statement to check error message from server response
+        errorDiv.innerHTML = serverrespons.message;
+        if(serverrespons.succes) {
+            document.getElementById("errorMessage").style.color = "green";
+            document.forms["signUpForm"].reset();
+        }
     }
     else{
         var errorDiv = document.getElementById('errorMessage');
@@ -190,7 +197,8 @@ function tryloginUser(){
 
     if(serverResp.success){
         localStorage.setItem("userToken", serverResp.data);
-        location.reload();
+        displayView();
+
     }
     else{
         document.forms["loginForm"].reset();
@@ -199,6 +207,7 @@ function tryloginUser(){
     }
 }
 function changeMyPassword(){
+    //add response message to success or not
     var oldPass = document.forms["changePass"]["oldpass"].value;
     var newPass = document.forms["changePass"]["newpass"].value;
     var repnewPass = document.forms["changePass"]["repnewpass"].value;
@@ -206,15 +215,18 @@ function changeMyPassword(){
         var passrespons = serverstub.changePassword(localStorage.getItem("userToken"), oldPass, newPass);
         if(passrespons.success){
             console.log(passrespons.message);
+            accountErrorMessage.innerHTML=passrespons.message;
             document.forms["changePass"].reset();
         }
         else{
             console.log(passrespons.message);
+            accountErrorMessage.innerHTML=passrespons.message;
             document.forms["changePass"].reset();
         }
     }
     else{
         console.log("Passwords don't match");
+        accountErrorMessage.innerHTML="Password needs to match.";
         document.forms["changePass"].reset();
     }
 }
