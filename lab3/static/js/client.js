@@ -24,25 +24,24 @@ window.onload = function(){
     displayView();
 };
 
-function send_post(adress, data){
+function send_post(adress, data, returnfunction){
     var xml_post = new XMLHttpRequest();
     xml_post.open("POST", adress, true);
     xml_post.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xml_post.onreadystatechange = function() {
         if (xml_post.readyState == 4 && xml_post.status == 200) {
-            return xml_post.responseText;
+            returnfunction(xml_get.responseText);
         }
     };
     xml_post.send(data);
 }
 
-function send_get(adress){
+function send_get(adress, returnfunction){
     var xml_get = new XMLHttpRequest();
     xml_get.open("GET", adress, true);
     xml_get.onreadystatechange = function() {
         if (xml_get.readyState == 4 && xml_get.status == 200) {
-            //console.log(xml_get.responseText);
-            return xml_get.responseText;
+            returnfunction(xml_get.responseText);
         }
     };
     xml_get.send();
@@ -52,21 +51,22 @@ function loadUserInfo(){
     //var homeUserInfo = serverstub.getUserDataByToken(localStorage.getItem("userToken"));
     //var userMessageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
 
-    var homeUserInfo = send_get("/get_user_data_by_token/" + localStorage.getItem("userToken"));
-    var userMessageObject = send_get("/get_user_message_by_token/" + localStorage.getItem("userToken"))
-    var userMessageArraySize = 0;
-    while(userMessageArraySize<userMessageObject.length){
-        document.getElementById('messageList').innerHTML += ('<label>'+userMessageObject[userMessageArraySize].writer+'</label><br><p>'+
-        userMessageObject[userMessageArraySize].content)+'</p>';
-        userMessageArraySize++;
-    }
-    console.log(homeUserInfo.data);
-    homeFirstName.innerHTML = homeUserInfo.data.firstname;
-    homeLastName.innerHTML = homeUserInfo.data.familyname;
-    homeEmail.innerHTML = homeUserInfo.data.email;
-    homeGender.innerHTML = homeUserInfo.data.gender;
-    homeCity.innerHTML = homeUserInfo.data.city;
-    homeCountry.innerHTML = homeUserInfo.data.country;
+    send_get("/get_user_data_by_token/" + localStorage.getItem("userToken"), function(serverdata){
+        homeFirstName.innerHTML = serverdata.data.firstname;
+        homeLastName.innerHTML = serverdata.data.familyname;
+        homeEmail.innerHTML = serverdata.data.email;
+        homeGender.innerHTML = serverdata.data.gender;
+        homeCity.innerHTML = serverdata.data.city;
+        homeCountry.innerHTML = serverdata.data.country;
+    });
+    send_get("/get_user_message_by_token/" + localStorage.getItem("userToken"), function(serverdata){
+        userMessageObject = serverdata.data;
+        var userMessageArraySize = 0;
+        while(userMessageArraySize<userMessageObject.length){
+            document.getElementById('messageList').innerHTML += ('<label>'+userMessageObject[userMessageArraySize].writer+'</label><br><p>'+ userMessageObject[userMessageArraySize].content)+'</p>';
+            userMessageArraySize++;
+        }
+    });
 }
 
 function checkBlanks(){
@@ -194,18 +194,19 @@ function createUser(){
 function tryloginUser(){
     var loginUser = document.forms["loginForm"]["email"].value;
     var loginPass = document.forms["loginForm"]["password"].value;
-    var serverResp = serverstub.signIn(loginUser, loginPass);
+    var post_data = "email="+loginUser+"&password="+loginPass;
+    //var serverResp = serverstub.signIn(loginUser, loginPass);
+    send_post("/sign_in", post_data, function(dothething){
+        if(dothething.success){
+            localStorage.setItem("userToken", dothething.data);
+            displayView();
+        }
+        else{
+            document.forms["loginForm"]["password"].value = ""; 
+            document.getElementById('errorLoginMessage').innerHTML = dothething.message;
+        } 
+    });
 
-    if(serverResp.success){
-        localStorage.setItem("userToken", serverResp.data);
-        displayView();
-
-    }
-    else{
-        document.forms["loginForm"].reset();
-        var errorLoginDiv = document.getElementById('errorLoginMessage');
-        errorLoginDiv.innerHTML = "Wrong credentials";
-    }
 }
 function changeMyPassword(){
     //add response message to success or not
