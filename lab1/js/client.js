@@ -176,7 +176,7 @@ function tryloginUser(){
 
     }
     else{
-        document.forms["loginForm"].reset();
+        document.forms["loginForm"]["password"].value = "";
         var errorLoginDiv = document.getElementById('errorLoginMessage');
         errorLoginDiv.innerHTML = "Wrong credentials";
     }
