@@ -28,7 +28,7 @@ lab3/.idea/*
 
 ## File-based project format:
 *.iws
-
+*.pyc
 ## Plugin-specific files:
 
 # IntelliJ

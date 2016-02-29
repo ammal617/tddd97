@@ -41,7 +41,6 @@ function send_get(adress){
     xml_get.open("GET", adress, true);
     xml_get.onreadystatechange = function() {
         if (xml_get.readyState == 4 && xml_get.status == 200) {
-            //console.log(xml_get.responseText);
             return xml_get.responseText;
         }
     };
@@ -53,7 +52,7 @@ function loadUserInfo(){
     //var userMessageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
 
     var homeUserInfo = send_get("/get_user_data_by_token/" + localStorage.getItem("userToken"));
-    var userMessageObject = send_get("/get_user_message_by_token/" + localStorage.getItem("userToken"))
+    var userMessageObject = send_get("/get_user_message_by_token/" + localStorage.getItem("userToken")).data
     var userMessageArraySize = 0;
     while(userMessageArraySize<userMessageObject.length){
         document.getElementById('messageList').innerHTML += ('<label>'+userMessageObject[userMessageArraySize].writer+'</label><br><p>'+
