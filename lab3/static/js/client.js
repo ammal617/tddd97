@@ -30,7 +30,8 @@ function send_post(adress, data, returnfunction){
     xml_post.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xml_post.onreadystatechange = function() {
         if (xml_post.readyState == 4 && xml_post.status == 200) {
-            returnfunction(xml_get.responseText);
+            console.log(xml_post.responseText);
+            returnfunction(JSON.parse(xml_post.responseText));
         }
     };
     xml_post.send(data);
@@ -41,10 +42,10 @@ function send_get(adress, returnfunction){
     xml_get.open("GET", adress, true);
     xml_get.onreadystatechange = function() {
         if (xml_get.readyState == 4 && xml_get.status == 200) {
-            returnfunction(xml_get.responseText);
+            returnfunction(JSON.parse(xml_get.responseText));
         }
     };
-    xml_get.send();
+    xml_get.send(null);
 }
 
 function loadUserInfo(){
@@ -202,7 +203,7 @@ function tryloginUser(){
             displayView();
         }
         else{
-            document.forms["loginForm"]["password"].value = ""; 
+            document.forms["loginForm"]["password"].value = "";
             document.getElementById('errorLoginMessage').innerHTML = dothething.message;
         } 
     });
