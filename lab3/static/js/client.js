@@ -30,7 +30,7 @@ function send_post(adress, data, returnfunction){
     xml_post.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xml_post.onreadystatechange = function() {
         if (xml_post.readyState == 4 && xml_post.status == 200) {
-            returnfunction(xml_get.responseText);
+            returnfunction(JSON.parse(xml_post.responseText));
         }
     };
     xml_post.send(data);
@@ -41,10 +41,10 @@ function send_get(adress, returnfunction){
     xml_get.open("GET", adress, true);
     xml_get.onreadystatechange = function() {
         if (xml_get.readyState == 4 && xml_get.status == 200) {
-            returnfunction(xml_get.responseText);
+            returnfunction(JSON.parse(xml_get.responseText));
         }
     };
-    xml_get.send();
+    xml_get.send(null);
 }
 
 function loadUserInfo(){
@@ -81,26 +81,37 @@ function checkBlanks(){
 
 function tryPostMessage(){
     var userMessage = document.getElementById('postMessage').value;
-    var tempUserEmail = serverstub.getUserDataByToken(localStorage.getItem("userToken")).data.email;
-    if(userMessage == ""){
-        console.log("YOU");
-    }
-    else {
-        serverstub.postMessage(localStorage.getItem("userToken"), userMessage, tempUserEmail);
-        document.getElementById('postMessage').value = "";
-        getAllMessages();
-    }
+   // var tempUserEmail = serverstub.getUserDataByToken(localStorage.getItem("userToken")).data.email;
+        if(userMessage == ""){
+            console.log("Iz Empty");
+        }
+    
+        else {
+            send_get("/get_user_data_by_token/"+localStorage.getItem("userToken"), function(alldata){
+                //serverstub.postMessage(localStorage.getItem("userToken"), userMessage, alldata.data.email);
+                if(alldata.success){
+                    var serverdata = "message="+userMessage+"&token="+localStorage.getItem("userToken")+"&email="+alldata.data.email;
+                    send_post("/post_message", serverdata, function(returnpost){
+                        document.getElementById('postMessage').value = "";
+                        getAllMessages();
+                    });
+                }
+            });
+                
+        }
 }
 
 function getAllMessages(){
-    var messageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
-    document.getElementById('messageList').innerHTML = "";
-    var messageArraySize = 0;
-    while(messageArraySize<messageObject.length){
-        document.getElementById('messageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
-        messageObject[messageArraySize].content)+'</p>';
-        messageArraySize++;
-    }
+    //var messageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
+    send_get("/get_user_message_by_token/"+localStorage.getItem("userToken"), function(messageData){
+        document.getElementById('messageList').innerHTML = "";
+        var messageArraySize = 0;
+        while(messageArraySize<messageData.data.length){
+            document.getElementById('messageList').innerHTML += ('<label>'+messageData.data[messageArraySize].writer+'</label><br><p>'+
+        messageData.data[messageArraySize].content)+'</p>';
+            messageArraySize++;
+        }  
+    });
 }
 
 function checkoutThisUser(){
