@@ -272,13 +272,14 @@ function changeMyPassword(){
 function logoutUser(){
     var postdata = "token="+localStorage.getItem("userToken");
     send_post("/sign_out", postdata, function(returndata){
+        delete connection;
         localStorage.removeItem("userToken");
         displayView();
     });
 }
-
+var connection;
 function connect_socket(token){
-    var connection = new WebSocket('ws://localhost:5000/socket_connect')
+    connection = new WebSocket('ws://localhost:5000/socket_connect')
     
     connection.onopen = function() {
         connection.send(token);
