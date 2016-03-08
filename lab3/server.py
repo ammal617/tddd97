@@ -150,6 +150,6 @@ def socket_connect():
 
 if __name__ == "__main__":
     # app.run()
-    #app.debug = True
+    app.debug = True
     http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
     http_server.serve_forever()
