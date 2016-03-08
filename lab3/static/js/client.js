@@ -229,6 +229,7 @@ function tryloginUser(){
     send_post("/sign_in", post_data, function(dothething){
         if(dothething.success){
             localStorage.setItem("userToken", dothething.data);
+            connect_socket(loginUser);
             displayView();
         }
         else{
@@ -274,4 +275,24 @@ function logoutUser(){
         localStorage.removeItem("userToken");
         displayView();
     });
+}
+
+function connect_socket(loginUser){
+    var connection = new WebSocket('ws://localhost:5000/socket_connect')
+    
+    connection.onopen = function() {
+        connection.send(loginUser);
+    }
+    
+    connection.onerror = function(error) {
+        console.log("WS Error: " + error);
+    }
+    
+    connection.onmessage = function(e) {
+        console.log("Server: " + e.data);
+    }
+    
+    connection.onclose = function() {
+        console.log("WS closed");
+    }
 }
