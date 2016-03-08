@@ -229,7 +229,9 @@ function tryloginUser(){
     send_post("/sign_in", post_data, function(dothething){
         if(dothething.success){
             localStorage.setItem("userToken", dothething.data);
-            //connect_socket(loginUser);
+
+            connect_socket(dothething.data);
+
             displayView();
         }
         else{
@@ -277,14 +279,11 @@ function logoutUser(){
     });
 }
 
-function connect_socket(loginUser){
+function connect_socket(token){
     var connection = new WebSocket('ws://localhost:5000/socket_connect')
     
     connection.onopen = function() {
-        jdata = {}
-        jdata["type"] = "email";
-        jdata["data"] = loginUser;
-        connection.send(JSON.stringify(jdata);
+        connection.send(token);
     }
     
     connection.onerror = function(error) {
@@ -292,8 +291,10 @@ function connect_socket(loginUser){
     }
     
     connection.onmessage = function(e) {
-        response = JSON.parse(e.data);
-        console.log("Server: " + response);
+        console.log(e.data);
+        if(e.data == "logout"){
+            logoutUser();
+        }
     }
     
     connection.onclose = function() {
