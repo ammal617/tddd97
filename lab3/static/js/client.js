@@ -33,10 +33,6 @@ function send_post(adress, data, returnfunction){
     xml_post.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xml_post.onreadystatechange = function() {
         if (xml_post.readyState == 4 && xml_post.status == 200) {
-<<<<<<< HEAD
-            console.log(xml_post.responseText);
-=======
->>>>>>> 965aa867522fe5e3593ebdd4fd4cb43bea04c0cd
             returnfunction(JSON.parse(xml_post.responseText));
         }
     };
@@ -66,8 +62,9 @@ function loadUserInfo(){
         homeCity.innerHTML = serverdata.data.city;
         homeCountry.innerHTML = serverdata.data.country;
     });
-    send_get("/get_user_message_by_token/" + localStorage.getItem("userToken"), function(serverdata){
-        userMessageObject = serverdata.data;
+    
+    send_get("/get_user_message_by_token/" + localStorage.getItem("userToken"), function(servermessages){
+        var userMessageObject = servermessages.data;
         var userMessageArraySize = 0;
         while(userMessageArraySize<userMessageObject.length){
             document.getElementById('messageList').innerHTML += ('<label>'+userMessageObject[userMessageArraySize].writer+'</label><br><p>'+ userMessageObject[userMessageArraySize].content)+'</p>';
@@ -75,7 +72,7 @@ function loadUserInfo(){
         }
     });
 }
-
+    
 function checkBlanks(){
     if(userObject.firstname == "" || userObject.familyname == "" || userObject.city == "" || userObject.country == "" || userObject.email == "" || userObject.password == '' || Repeatpsw == ''){
         errorMessage = "Missing information";
@@ -112,10 +109,11 @@ function getAllMessages(){
     //var messageObject = serverstub.getUserMessagesByToken(localStorage.getItem("userToken")).data;
     send_get("/get_user_message_by_token/"+localStorage.getItem("userToken"), function(messageData){
         document.getElementById('messageList').innerHTML = "";
+        var messageObject = messageData.data;
         var messageArraySize = 0;
-        while(messageArraySize<messageData.data.length){
-            document.getElementById('messageList').innerHTML += ('<label>'+messageData.data[messageArraySize].writer+'</label><br><p>'+
-        messageData.data[messageArraySize].content)+'</p>';
+        while(messageArraySize<messageObject.length){
+            document.getElementById('messageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
+        messageObject[messageArraySize].content)+'</p>';
             messageArraySize++;
         }  
     });
@@ -210,7 +208,7 @@ function createUser(){
         //add if statement to check error message from server response
         send_post("/sign_up", signobject, function(returndata){
             errorDiv.innerHTML = returndata.message;
-            if(returndata.succes) {
+            if(returndata.success) {
                 errorDiv.style.color = "green";
                 document.forms["signUpForm"].reset();
             }
@@ -247,16 +245,16 @@ function changeMyPassword(){
     var newPass = document.forms["changePass"]["newpass"].value;
     var repnewPass = document.forms["changePass"]["repnewpass"].value;
     if (newPass == repnewPass){
-        var postdata = "token="+localStorage.getItem("userToken")+"&old_password="+oldPass+"&new_password"=newPass;
-        send_post("/change_password", postdata, function(passrespons){
+        var postData = "token="+localStorage.getItem("userToken")+"&password="+oldPass+"&new_password="+newPass;
+        send_post("/change_password", postData, function(passrespons){
             if(passrespons.success){
-                console.log(passrespons.message);
-                accountErrorMessage.innerHTML=passrespons.message;
+                console.log("FUNKAS: "+passrespons.message);
+                document.getElementById('accountErrorMessage').innerHTML = passrespons.message;
                 document.forms["changePass"].reset();
             }
             else{
                 console.log(passrespons.message);
-                accountErrorMessage.innerHTML=passrespons.message;
+                document.getElementById('accountErrorMessage').innerHTML = passrespons.message;
                 document.forms["changePass"].reset();
             }      
         });

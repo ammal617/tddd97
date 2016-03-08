@@ -96,7 +96,7 @@ def get_user_data_by_email(token, email):
 @app.route("/get_user_message_by_token/<token>", methods=['GET'])
 def get_user_message_by_token(token):
     if token in logged_in_users:
-        data = database_helper.get_user_message(logged_in_users[token])
+        data = database_helper.get_user_messages(logged_in_users[token])
         return jsonify({"success": True, "message": "Messages retrieved", "data": data})
     else:
         return jsonify({"success": False, "message": "Not logged in!"})
@@ -104,7 +104,7 @@ def get_user_message_by_token(token):
 
 @app.route("/get_user_message_by_email/<token>/<email>", methods=['GET'])
 def get_user_message_by_email(token, email):
-    if token in logged_in_users:
+    if token not in logged_in_users:
         return jsonify({"success": False, "message": "Not logged in!"})
     else:
         if database_helper.userExist(email):
