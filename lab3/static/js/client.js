@@ -1,28 +1,31 @@
-displayViews = function(){
-
-};
 var errorMessage;
 var Repeatpsw;
 var userObject = {email:"", password:"", firstname:"", familyname:"", gender:"", city:"", country:""};
 
+window.onload = function(){
+    displayView();
+};
 
 var displayView = function(){
 
     var htmlDiv = document.getElementById('currentView');
     var htmlWelcome = document.getElementById('welcomeView');
     var htmlLogin = document.getElementById('loginView');
-    if(localStorage.getItem("userToken") == "nothing"){
+    if(localStorage.getItem("userToken") == "undefined" || localStorage.getItem("userToken") == null){
         htmlDiv.innerHTML = htmlWelcome.innerHTML;
     }
     else{
-        htmlDiv.innerHTML = htmlLogin.innerHTML;
-        loadUserInfo();
+        send_get("/is_loggedin/"+localStorage.getItem("userToken"), function(returndata){
+            if (returndata.success){
+                htmlDiv.innerHTML = htmlLogin.innerHTML;
+                loadUserInfo();
+            }
+            else {
+               htmlDiv.innerHTML = htmlWelcome.innerHTML; 
+            }
+        }); 
     }
 }
-
-window.onload = function(){
-    displayView();
-};
 
 function send_post(adress, data, returnfunction){
     var xml_post = new XMLHttpRequest();
@@ -123,33 +126,40 @@ function checkoutThisUser(){
     var newUserView = '<textarea id="searchUserPostMessage" rows="3" cols="50"></textarea><br><button type="button" onclick="postToUser()">Post</button>' +
         '<div id=showAllMessages><label>'+inputSearchUser+'s messages </label><button type="button" onclick="checkoutThisUser()">Update</button><br>' +
         '<div id="searchUserMessageList"></div></div>';
-    searchUserMessages = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser);
-    if(!searchUserMessages.success){
-        friendView.innerHTML = "<label>"+searchUserMessages.message+"</label>";
-    }
-    else{
-        friendView.innerHTML = newUserView;
-        var messageObject = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser).data;
-        var messageArraySize = 0;
-        while(messageArraySize<messageObject.length){
-            document.getElementById('searchUserMessageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
-            messageObject[messageArraySize].content)+'</p>';
-            messageArraySize++;
+    
+    send_get("/get_user_message_by_email/"+localStorage.getItem("userToken")+"/"+inputSearchUser, function(messagereturn){
+        if(!messagereturn.success){
+            friendView.innerHTML = "<label>"+messagereturn.message+"</label>";
         }
-    }
+        else{
+            friendView.innerHTML = newUserView;
+            var messageObject = messagereturn.data;
+            var messageArraySize = 0;
+            while(messageArraySize<messageObject.length){
+                document.getElementById('searchUserMessageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
+                messageObject[messageArraySize].content)+'</p>';
+                messageArraySize++;
+            }
+        }
+    });
+    
+  //  searchUserMessages = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser);
 }
+
 function postToUser(){
     var searchUserPostMessage = document.getElementById('searchUserPostMessage').value;
     var inputSearchUser = document.getElementById("userSearchEmail").value;
     if(searchUserPostMessage == ""){
     }
     else {
-        serverstub.postMessage(localStorage.getItem("userToken"), searchUserPostMessage, inputSearchUser);
-        document.getElementById('postMessage').value = "";
-        getAllMessages();
-        checkoutThisUser();
+        //serverstub.postMessage(localStorage.getItem("userToken"), searchUserPostMessage, inputSearchUser);
+        var postdata =  "token="+localStorage.getItem("userToken")+"&email="+inputSearchUser+"&message="+searchUserPostMessage;
+        send_post("/post_message", postdata, function(returndata){
+            document.getElementById('postMessage').value = "";
+            getAllMessages();
+            checkoutThisUser();
+        });
     }
-
 }
 
 function checkEmail(){
@@ -190,15 +200,21 @@ function createUser(){
     userObject.email = document.forms["signUpForm"]["Email"].value;
     userObject.password = document.forms["signUpForm"]["Password"].value;
     Repeatpsw = document.forms["signUpForm"]["Repeatpsw"].value;
+    
     if(checkPassword() && checkEmail() && checkBlanks()){
         var errorDiv = document.getElementById('errorMessage');
-        serverrespons= serverstub.signUp(userObject);
+        
+        var signobject = "email="+userObject.email+"&password="+userObject.password+"&first_name="+userObject.firstname+"&family_name="+userObject.familyname+"&gender="+userObject.gender+"&city="+userObject.city+"&country="+userObject.country;
+        
+        //serverrespons= serverstub.signUp(userObject);
         //add if statement to check error message from server response
-        errorDiv.innerHTML = serverrespons.message;
-        if(serverrespons.succes) {
-            document.getElementById("errorMessage").style.color = "green";
-            document.forms["signUpForm"].reset();
-        }
+        send_post("/sign_up", signobject, function(returndata){
+            errorDiv.innerHTML = returndata.message;
+            if(returndata.succes) {
+                errorDiv.style.color = "green";
+                document.forms["signUpForm"].reset();
+            }
+        });
     }
     else{
         var errorDiv = document.getElementById('errorMessage');
@@ -206,6 +222,7 @@ function createUser(){
     }
 
 }
+
 function tryloginUser(){
     var loginUser = document.forms["loginForm"]["email"].value;
     var loginPass = document.forms["loginForm"]["password"].value;
@@ -223,23 +240,28 @@ function tryloginUser(){
     });
 
 }
+
 function changeMyPassword(){
     //add response message to success or not
     var oldPass = document.forms["changePass"]["oldpass"].value;
     var newPass = document.forms["changePass"]["newpass"].value;
     var repnewPass = document.forms["changePass"]["repnewpass"].value;
     if (newPass == repnewPass){
-        var passrespons = serverstub.changePassword(localStorage.getItem("userToken"), oldPass, newPass);
-        if(passrespons.success){
-            console.log(passrespons.message);
-            accountErrorMessage.innerHTML=passrespons.message;
-            document.forms["changePass"].reset();
-        }
-        else{
-            console.log(passrespons.message);
-            accountErrorMessage.innerHTML=passrespons.message;
-            document.forms["changePass"].reset();
-        }
+        var postdata = "token="+localStorage.getItem("userToken")+"&old_password="+oldPass+"&new_password"=newPass;
+        send_post("/change_password", postdata, function(passrespons){
+            if(passrespons.success){
+                console.log(passrespons.message);
+                accountErrorMessage.innerHTML=passrespons.message;
+                document.forms["changePass"].reset();
+            }
+            else{
+                console.log(passrespons.message);
+                accountErrorMessage.innerHTML=passrespons.message;
+                document.forms["changePass"].reset();
+            }      
+        });
+        //var passrespons = serverstub.changePassword(localStorage.getItem("userToken"), oldPass, newPass);
+
     }
     else{
         console.log("Passwords don't match");
@@ -249,6 +271,9 @@ function changeMyPassword(){
 }
 
 function logoutUser(){
-    localStorage.setItem("userToken", "nothing");
-    location.reload();
+    var postdata = "token="+localStorage.getItem("userToken");
+    send_post("/sign_out", postdata, function(returndata){
+        localStorage.removeItem("userToken");
+        displayView();
+    });
 }
