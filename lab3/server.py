@@ -1,4 +1,7 @@
 from flask import Flask, request, redirect, jsonify
+from gevent.pywsgi import WSGIServer
+from geventwebsocket import WebSocketServer, WebSocketApplication, Resource, WebSocketError
+from geventwebsocket.handler import WebSocketHandler
 import database_helper
 import uuid
 import json
@@ -6,6 +9,7 @@ import json
 app = Flask(__name__)
 
 logged_in_users = {}
+active_sockets = {}
 
 
 @app.route("/")
@@ -129,5 +133,23 @@ def post_message():
             return jsonify({"success": False, "message": "User don't exist"})
 
 
+@app.route('/socket_connect')
+def socket_connect():
+    # wsock = request.environ.get('wsgi.websocket')
+    if request.environ.get('wsgi.websocket'):
+        wsock = request.environ['wsgi.websocket']
+        while True:
+            try:
+                token = wsock.receive()
+                if logged_in_users[token] in active_sockets:
+                    active_sockets[logged_in_users[token]].send("logout");
+                active_sockets[logged_in_users[token]] = wsock
+            except WebSocketError:
+                break
+
+
 if __name__ == "__main__":
-    app.run()
+    # app.run()
+    #app.debug = True
+    http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    http_server.serve_forever()

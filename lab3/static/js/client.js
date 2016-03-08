@@ -229,7 +229,7 @@ function tryloginUser(){
     send_post("/sign_in", post_data, function(dothething){
         if(dothething.success){
             localStorage.setItem("userToken", dothething.data);
-            connect_socket(loginUser);
+            connect_socket(dothething.data);
             displayView();
         }
         else{
@@ -277,11 +277,11 @@ function logoutUser(){
     });
 }
 
-function connect_socket(loginUser){
+function connect_socket(token){
     var connection = new WebSocket('ws://localhost:5000/socket_connect')
     
     connection.onopen = function() {
-        connection.send(loginUser);
+        connection.send(token);
     }
     
     connection.onerror = function(error) {
@@ -289,7 +289,10 @@ function connect_socket(loginUser){
     }
     
     connection.onmessage = function(e) {
-        console.log("Server: " + e.data);
+        console.log(e.data);
+        if(e.data == "logout"){
+            logoutUser();
+        }        
     }
     
     connection.onclose = function() {
