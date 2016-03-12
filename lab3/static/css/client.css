@@ -7,7 +7,6 @@ body{
     width: 640px;
 }
 #main {
-    position: center-aligned;
     margin: 0 auto;
     padding: 100px 0px 0px;
     width: 600px;
@@ -62,6 +61,13 @@ body{
     float: right;
     margin-right: 28px;
 }
+
+#info{
+    float: right;
+    position: relative;
+    margin: auto;
+
+}
 #errorMessage, #errorLoginMessage{
     font-size: 12px;
     margin-top: 3px;
@@ -76,12 +82,12 @@ body{
 .tabs > input{
     display: none;
 }
-.tabs > section{
+.tabs > section {
 }
-.tabs > section > h1{
+.tabs > section > h1 {
     margin: 0 auto;
 }
-.tabs > section > h1 > label{
+.tabs > section > h1 > label {
     float: left;
     padding: 6px;
     margin: 1px;
