@@ -1,5 +1,6 @@
 var errorMessage;
 var Repeatpsw;
+var myBarChart;
 var userObject = {email:"", password:"", firstname:"", familyname:"", gender:"", city:"", country:""};
 
 window.onload = function(){
@@ -19,6 +20,7 @@ var displayView = function(){
             if (returndata.success){
                 htmlDiv.innerHTML = htmlLogin.innerHTML;
                 loadUserInfo();
+                createChart();
             }
             else {
                htmlDiv.innerHTML = htmlWelcome.innerHTML; 
@@ -138,10 +140,19 @@ function checkoutThisUser(){
                 messageObject[messageArraySize].content)+'</p>';
                 messageArraySize++;
             }
+            add_view_to_user(inputSearchUser);
         }
     });
     
   //  searchUserMessages = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser);
+}
+
+function add_view_to_user(email){
+    var data = "token=" + localStorage.getItem("userToken") + "&email=" + email;
+
+    send_post("/add_views", data, function(response){
+        console.log(response.success);
+    });
 }
 
 function postToUser(){
@@ -279,26 +290,69 @@ function logoutUser(){
         displayView();
     });
 }
+
+function createChart() {
+    var data = {
+        labels: ["Profile views", "Users online", "My messages"],
+        datasets: [
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: [0,0,0]
+            }
+        ]
+    };
+
+    var options = {
+
+    };
+
+    var ctx = document.getElementById("chart").getContext("2d");
+    myBarChart = new Chart(ctx).Bar(data, options);
+
+}
+function updateChart(token) {
+    var data = {};
+    data["type"] = "userdata";
+    data["data"] = token;
+    connection.send(JSON.stringify(data));
+}
+
 var connection;
 function connect_socket(token){
     connection = new WebSocket('ws://localhost:5000/socket_connect')
     
     connection.onopen = function() {
-        connection.send(token);
-    }
+        var data = {};
+        data["type"] = "login";
+        data["data"] = token;
+        connection.send(JSON.stringify(data));
+        updateChart(localStorage.getItem("userToken"));
+    };
     
     connection.onerror = function(error) {
         console.log("WS Error: " + error);
-    }
+    };
     
     connection.onmessage = function(e) {
-        console.log(e.data);
-        if(e.data == "logout"){
+        var response = JSON.parse(e.data)
+
+        if(response.type == "logout"){
             logoutUser();
+        }
+        else if(response.type == "userdata"){
+            console.log(response.views);
+            myBarChart.datasets[0].bars[0].value = response.views;
+            myBarChart.datasets[0].bars[1].value = response.usersonline;
+            myBarChart.datasets[0].bars[2].value = response.messagecount;
+            myBarChart.update();
         }
     }
     
     connection.onclose = function() {
         console.log("WS closed");
-    }
+    };
 }

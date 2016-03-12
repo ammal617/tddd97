@@ -52,8 +52,8 @@ def checkPassword(email, password):
 
 
 def sign_up_user(email, password, first_name, family_name, gender, city, country):
-    query_db('insert into users(email, password, firstname, familyname, gender, city, country) VALUES (?,?,?,?,?,?,?)',
-             [email, password, first_name, family_name, gender, city, country])
+    query_db('insert into users(email, password, firstname, familyname, gender, city, country, views) VALUES (?,?,?,?,?,?,?,?)',
+             [email, password, first_name, family_name, gender, city, country, 1])
     get_db().commit()
     return True
 
@@ -87,6 +87,17 @@ def post_message(sender, reciver, message):
     query_db('INSERT INTO messages(message, sender, reciver) VALUES (?,?,?)', [message, sender, reciver])
     get_db().commit()
     return True
+
+
+def add_view(email):
+    response = query_db('UPDATE users SET views = views + 1 WHERE email = ?', [email])
+    get_db().commit()
+    return response
+
+
+def get_views(email):
+    view_amount = query_db('SELECT views FROM users WHERE email=?', [email])
+    return view_amount[0][0]
 
 
 @app.teardown_appcontext

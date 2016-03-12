@@ -3,6 +3,7 @@
 <head>
     <link href="css/client.css" type="text/css" rel="stylesheet">
     <script src="js/client.js"></script>
+    <script src="js/Chart.js"></script>
     <script src="js/serverstub.js"></script>
     <title>Twidder</title>
     <meta charset="utf-8">
@@ -64,6 +65,7 @@
             <div>
                 <button type="submit" onclick="logoutUser()">Logout</button>
             </div>
+            <canvas id="chart"></canvas>
             <div class="tabs">
         <input name="Tab" id="homeTabInp" type="radio" checked>
         <section>
@@ -80,7 +82,7 @@
                     <label>County: </label><label id="homeCountry"></label><br>
                 </div>
                 <div>
-                    <textarea id="postMessage" rows="3" cols="50"></textarea><br>
+                    <textarea id="postMessage" rows="8" cols="30"></textarea><br>
                     <button type="button" onclick="tryPostMessage()">Post</button>
                     <div id=showAllMessages>
                         <label>My messages</label>

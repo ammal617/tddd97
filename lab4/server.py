@@ -128,9 +128,29 @@ def post_message():
     else:
         if database_helper.userExist(email):
             database_helper.post_message(logged_in_users[token], email, message)
+            #push message number via socket to user who posted to (if online)
             return jsonify({"success": True, "message": "Message posted"})
         else:
             return jsonify({"success": False, "message": "User don't exist"})
+
+
+@app.route("/add_views", methods=['POST'])
+def add_views():
+    user_token = request.form['token']
+    user_email = request.form['email']
+    if user_token in logged_in_users and database_helper.userExist(user_email):
+        database_helper.add_view(user_email)
+        if user_email in active_sockets:
+            return_data = {
+                "type": "userdata",
+                "views": database_helper.get_views(user_email),
+                "usersonline": len(logged_in_users),
+                "messagecount": len(database_helper.get_user_messages(user_email))
+            }
+            active_sockets[user_email].send(json.dumps(return_data))
+        return jsonify({"success": True, "messages": "Added view"})
+    else:
+        return jsonify({"success": False, "messages": "Non added"})
 
 
 @app.route('/socket_connect')
@@ -140,10 +160,27 @@ def socket_connect():
         wsock = request.environ['wsgi.websocket']
         while True:
             try:
-                token = wsock.receive()
-                if logged_in_users[token] in active_sockets:
-                    active_sockets[logged_in_users[token]].send("logout");
-                active_sockets[logged_in_users[token]] = wsock
+                message = wsock.receive()
+                message_type = json.loads(message)["type"]
+                message_data = json.loads(message)["data"]
+
+                if message_type == "login":
+                    token = message_data
+                    if logged_in_users[token] in active_sockets:
+                        return_data = {"type": "logout"}
+                        active_sockets[logged_in_users[token]].send(json.dumps(return_data))
+                    active_sockets[logged_in_users[token]] = wsock
+
+                elif message_type == "userdata":
+                    email = logged_in_users[message_data]
+                    data = {
+                        "type": "userdata",
+                        "views": database_helper.get_views(email),
+                        "usersonline": len(logged_in_users),
+                        "messagecount": len(database_helper.get_user_messages(email))
+                    }
+                    wsock.send(json.dumps(data))
+
             except WebSocketError:
                 break
 
