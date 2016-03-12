@@ -1,0 +1,151 @@
+
+body{
+    background-color: darkcyan;
+}
+.container {
+    margin: 50px auto;
+    width: 640px;
+}
+#main {
+    position: center-aligned;
+    margin: 0 auto;
+    padding: 100px 0px 0px;
+    width: 600px;
+    height: 400px;
+}
+#login {
+    float: right;
+    position: relative;
+    margin: 0px 0px 10px 0px;
+    padding: 15px 0px;
+    width: 250px;
+    background-color: white;
+}
+#signUp {
+    float: right;
+    position: relative;
+    margin: 0 auto;
+    padding: 8px 0px 9px 0px;
+    width: 250px;
+    background-color: white;
+}
+#logo {
+    float:left;
+    position: relative;
+    margin: 0 auto;
+    padding: 0px 10px 0px 0px;
+    width: 340px;
+}
+#main form{
+    display: inline-block;
+    width: 222px;
+}
+#main input{
+    float: right;
+    width: 145px;
+}
+#main select{
+    width: 149px;
+    float: right;
+}
+#main p{
+    text-align:center;
+    font-weight:bold;
+}
+#main label{
+    padding: 5px;
+    font-size: 12px;
+    display:inline-block;
+    text-align: left;
+}
+#main button{
+    float: right;
+    margin-right: 28px;
+}
+#errorMessage, #errorLoginMessage{
+    font-size: 12px;
+    margin-top: 3px;
+    text-align: center;
+    color: crimson;
+}
+
+.tabs{
+    height: 500px;
+    margin: 150px 200px;
+}
+.tabs > input{
+    display: none;
+}
+.tabs > section{
+}
+.tabs > section > h1{
+    margin: 0 auto;
+}
+.tabs > section > h1 > label{
+    float: left;
+    padding: 6px;
+    margin: 1px;
+    background-color: #809ca1;
+    font-size: 24px;
+    font-family: Verdana;
+    font-style: italic;
+    border: 1px solid black;
+    width: 30%;
+    text-align: center;
+}
+.tabs > section > div{
+    position: absolute;
+    margin-top: 45px;
+}
+.tabs > section > div > label{
+    float: left;
+    font-family: Verdana;
+    font-style: italic;
+    font-size: 15px;
+}
+.tabs > section > div > input{
+    float: right;
+    margin: 2px;
+}
+.tabs > section > div > button{
+    float: left;
+    margin: 2px;
+}
+
+.tabs > input:checked + section > h1{
+    display: block;
+}
+.tabs > input:not(:checked) + section > div {
+    display: none;
+}
+
+.login p.submit {
+    text-align: right;
+}
+
+.login-help {
+    margin: 20px 0;
+    font-size: 11px;
+    color: white;
+    text-align: center;
+    text-shadow: 0 1px #2a85a1;
+}
+
+.login-help a {
+    color: #cce7fa;
+    text-decoration: none;
+}
+
+.login-help a:hover {
+    text-decoration: underline;
+}
+
+:-moz-placeholder {
+    color: #c9c9c9 !important;
+    font-size: 13px;
+}
+
+::-webkit-input-placeholder {
+    color: #ccc;
+    font-size: 13px;
+}
