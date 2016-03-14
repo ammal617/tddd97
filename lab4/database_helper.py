@@ -53,7 +53,7 @@ def checkPassword(email, password):
 
 def sign_up_user(email, password, first_name, family_name, gender, city, country):
     query_db('insert into users(email, password, firstname, familyname, gender, city, country, views) VALUES (?,?,?,?,?,?,?,?)',
-             [email, password, first_name, family_name, gender, city, country, 1])
+             [email, password, first_name, family_name, gender, city, country, 0])
     get_db().commit()
     return True
 

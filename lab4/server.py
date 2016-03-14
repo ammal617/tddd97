@@ -32,6 +32,12 @@ def sign_in():
     if database_helper.check_email(email, password):
         userToken = str(uuid.uuid4())
         logged_in_users[userToken] = email
+        tempdata = {
+            "type": "curruseronline",
+            "usersonline": len(logged_in_users)
+        }
+        for s in active_sockets:
+            active_sockets[s].send(json.dumps(tempdata))
         return jsonify({"success": True, "message": "Signed in", "data": userToken})
     else:
         return jsonify({"success": False, "message": "Wrong credentials!"})
@@ -40,8 +46,18 @@ def sign_in():
 @app.route("/sign_out", methods=['POST'])
 def sign_out():
     userToken = request.form['token']
-    if userToken in logged_in_users:
+    kick = request.form['kick']
+    if kick == 'logout':
+        del active_sockets[logged_in_users[userToken]]
         del logged_in_users[userToken]
+    elif kick == 'kickout':
+        del logged_in_users[userToken]
+    tempdata = {
+        "type": "curruseronline",
+        "usersonline": len(logged_in_users)
+    }
+    for s in active_sockets:
+        active_sockets[s].send(json.dumps(tempdata))
     return jsonify({"success": True, "message": "You have signed out"})
 
 
@@ -128,7 +144,16 @@ def post_message():
     else:
         if database_helper.userExist(email):
             database_helper.post_message(logged_in_users[token], email, message)
-            #push message number via socket to user who posted to (if online)
+
+        if email in active_sockets:
+            return_data = {
+                "type": "userdata",
+                "views": database_helper.get_views(email),
+                "usersonline": len(logged_in_users),
+                "messagecount": len(database_helper.get_user_messages(email))
+            }
+            active_sockets[email].send(json.dumps(return_data))
+
             return jsonify({"success": True, "message": "Message posted"})
         else:
             return jsonify({"success": False, "message": "User don't exist"})

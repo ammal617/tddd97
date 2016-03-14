@@ -1,14 +1,17 @@
 var errorMessage;
 var Repeatpsw;
 var myBarChart;
+var tempusersonline = 0;
+var tempmymessages = 0;
+var tempmyviews = 0;
 var userObject = {email:"", password:"", firstname:"", familyname:"", gender:"", city:"", country:""};
 
 window.onload = function(){
+    //WORKSNOW
     displayView();
 };
 
 var displayView = function(){
-
     var htmlDiv = document.getElementById('currentView');
     var htmlWelcome = document.getElementById('welcomeView');
     var htmlLogin = document.getElementById('loginView');
@@ -16,9 +19,9 @@ var displayView = function(){
         htmlDiv.innerHTML = htmlWelcome.innerHTML;
     }
     else{
+        htmlDiv.innerHTML = htmlLogin.innerHTML;
         send_get("/is_loggedin/"+localStorage.getItem("userToken"), function(returndata){
             if (returndata.success){
-                htmlDiv.innerHTML = htmlLogin.innerHTML;
                 loadUserInfo();
                 createChart();
             }
@@ -147,11 +150,36 @@ function checkoutThisUser(){
   //  searchUserMessages = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser);
 }
 
+function updateThisUser(){
+    var inputSearchUser = document.getElementById("userSearchEmail").value;
+    var newUserView = '<textarea id="searchUserPostMessage" rows="3" cols="50"></textarea><br><button type="button" onclick="postToUser()">Post</button>' +
+        '<div id=showAllMessages><label>'+inputSearchUser+'s messages </label><button type="button" onclick="updateThisUser()">Update</button><br>' +
+        '<div id="searchUserMessageList"></div></div>';
+
+    send_get("/get_user_message_by_email/"+localStorage.getItem("userToken")+"/"+inputSearchUser, function(messagereturn){
+        if(!messagereturn.success){
+            friendView.innerHTML = "<label>"+messagereturn.message+"</label>";
+        }
+        else{
+            friendView.innerHTML = newUserView;
+            var messageObject = messagereturn.data;
+            var messageArraySize = 0;
+            while(messageArraySize<messageObject.length){
+                document.getElementById('searchUserMessageList').innerHTML += ('<label>'+messageObject[messageArraySize].writer+'</label><br><p>'+
+                messageObject[messageArraySize].content)+'</p>';
+                messageArraySize++;
+            }
+        }
+    });
+
+  //  searchUserMessages = serverstub.getUserMessagesByEmail(localStorage.getItem("userToken"),inputSearchUser);
+}
+
+
 function add_view_to_user(email){
     var data = "token=" + localStorage.getItem("userToken") + "&email=" + email;
 
     send_post("/add_views", data, function(response){
-        console.log(response.success);
     });
 }
 
@@ -166,7 +194,7 @@ function postToUser(){
         send_post("/post_message", postdata, function(returndata){
             document.getElementById('postMessage').value = "";
             getAllMessages();
-            checkoutThisUser();
+            updateThisUser();
         });
     }
 }
@@ -240,10 +268,9 @@ function tryloginUser(){
     send_post("/sign_in", post_data, function(dothething){
         if(dothething.success){
             localStorage.setItem("userToken", dothething.data);
-
-            connect_socket(dothething.data);
-
             displayView();
+            createChart();
+            connect_socket(dothething.data);
         }
         else{
             document.forms["loginForm"]["password"].value = "";
@@ -283,10 +310,21 @@ function changeMyPassword(){
 }
 
 function logoutUser(){
-    var postdata = "token="+localStorage.getItem("userToken");
+    var postdata = "token="+localStorage.getItem("userToken")+"&kick=logout";
     send_post("/sign_out", postdata, function(returndata){
         delete connection;
         localStorage.removeItem("userToken");
+        connection.close();
+        displayView();
+    });
+}
+
+function kickUser(){
+    var postdata = "token="+localStorage.getItem("userToken")+"&kick=kickout";
+    send_post("/sign_out", postdata, function(returndata){
+        delete connection;
+        localStorage.removeItem("userToken");
+        connection.close();
         displayView();
     });
 }
@@ -301,7 +339,7 @@ function createChart() {
                 strokeColor: "rgba(220,220,220,0.8)",
                 highlightFill: "rgba(220,220,220,0.75)",
                 highlightStroke: "rgba(220,220,220,1)",
-                data: [0,0,0]
+                data: [tempmyviews,tempusersonline,tempmymessages]
             }
         ]
     };
@@ -341,13 +379,23 @@ function connect_socket(token){
         var response = JSON.parse(e.data)
 
         if(response.type == "logout"){
-            logoutUser();
+            console.log("PLEASE LOGOUT");
+            kickUser();
         }
         else if(response.type == "userdata"){
             console.log(response.views);
+            tempmyviews = response.views
+            tempusersonline = response.usersonline;
+            tempmymessages = response.messagecount;
             myBarChart.datasets[0].bars[0].value = response.views;
             myBarChart.datasets[0].bars[1].value = response.usersonline;
             myBarChart.datasets[0].bars[2].value = response.messagecount;
+            myBarChart.update();
+        }
+        else if(response.type == "curruseronline"){
+            tempusersonline = response.usersonline;
+            console.log(tempusersonline);
+            myBarChart.datasets[0].bars[1].value = response.usersonline;
             myBarChart.update();
         }
     }
